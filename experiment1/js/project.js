@@ -22,13 +22,50 @@ class MyProjectClass {
   }
 }
 
-function main() {
-  // create an instance of the class
-  let myInstance = new MyProjectClass("value1", "value2");
+const fillers = {
+  adventurer: ["Adventurer", "Traveller", "Fellow", "Citizen"],
+  pre: ["Fra", "Tro", "Gre"],
+  post: ["gria", "ston", "gott"],
+  people: ["kindly", "meek", "brave", "wise"],
+  item: ["axe", "staff", "book", "cloak"],
+  num: ["two", "three", "eleven", "so many", "too many", "an unsatisfying number of"],
+  looty: ["gleaming", "valuable", "esteemed"],
+  loots: ["coins", "chalices", "ingots"],
+  baddies: ["orcs", "glubs", "fishmen"],
+  message: ["call", "txt", "post", "decree"],
+  
+};
 
-  // call a method on the instance
-  myInstance.myMethod();
+const template = `$adventurer, heed my $message!
+
+I have just come from $pre$post where the $people folk are in desperate need. Their town has been overrun by $baddies. You must venture forth at once, taking my $item, and help them.
+
+It is told that the one who can rescue them will be awarded with $num $looty $loots. Surely this must tempt one such as yourself!
+`;
+
+
+const slotPattern = /\$(\w+)/;
+
+function replacer(match, name) {
+  let options = fillers[name];
+  if (options) {
+    return options[Math.floor(Math.random() * options.length)];
+  } else {
+    return `<UNKNOWN:${name}>`;
+  }
 }
 
-// let's get this party started - uncomment me
-//main();
+function generate() {
+  let story = template;
+  while (story.match(slotPattern)) {
+    story = story.replace(slotPattern, replacer);
+  }
+
+  /* global box */
+  box.innerText = story;
+}
+
+/* global clicker */
+clicker.onclick = generate;
+
+generate();
