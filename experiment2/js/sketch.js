@@ -34,8 +34,6 @@ function resizeScreen() {
   // redrawCanvas(); // Redraw everything based on new size
 }
 
-let seed = 0;
-
 // setup() function is called once when the program starts
 function setup() {
   // place our canvas, making it fit our container
@@ -56,7 +54,6 @@ function setup() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-   randomSeed(seed);
   background(135, 206, 235);   
   // call a method on the instance
   myInstance.myMethod();
