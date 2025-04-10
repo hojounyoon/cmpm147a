@@ -66,6 +66,9 @@ function draw() {
   textStyle(BOLD);
   textSize(140);
   text("p5*", centerHorz - 105, centerVert + 40);
+
+  randomSeed(seed);
+  background(135, 206, 235);
     
   // Ocean
   noStroke();
