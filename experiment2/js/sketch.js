@@ -48,7 +48,7 @@ function setup() {
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
   randomSeed(seed);
-  background(135, 206, 235);
+  background(220);
     
   // Ocean
   noStroke();
