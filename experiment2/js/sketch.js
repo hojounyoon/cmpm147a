@@ -33,7 +33,7 @@ function resizeScreen() {
   resizeCanvas(canvasContainer.width(), canvasContainer.height());
   // redrawCanvas(); // Redraw everything based on new size
 }
-
+let seed = 0;
 // setup() function is called once when the program starts
 function setup() {  
   createCanvas(400, 200);
