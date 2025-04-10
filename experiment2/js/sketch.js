@@ -56,7 +56,8 @@ function setup() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);    
+   randomSeed(seed);
+  background(135, 206, 235);   
   // call a method on the instance
   myInstance.myMethod();
 
@@ -74,9 +75,6 @@ function draw() {
   textStyle(BOLD);
   textSize(140);
   text("p5*", centerHorz - 105, centerVert + 40);
-
-  randomSeed(seed);
-  background(135, 206, 235);
     
   // Ocean
   noStroke();
