@@ -35,25 +35,20 @@ function resizeScreen() {
 }
 
 // setup() function is called once when the program starts
-function setup() {
-  // place our canvas, making it fit our container
+function setup() {  
   canvasContainer = $("#canvas-container");
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
-  // resize canvas is the page is resized
-  
-  // create an instance of the class
-  myInstance = new MyClass("VALUE1", "VALUE2");
-
   $(window).resize(function() {
     resizeScreen();
   });
   resizeScreen();
 }
 
+
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(135, 206, 235); 
+  background(220); 
   // call a method on the instance
   myInstance.myMethod();
 
