@@ -41,8 +41,7 @@ function setup() {
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
   // resize canvas is the page is resized
-  createCanvas(400, 200);
-  createButton("reimagine").mousePressed(() => seed++);
+  
   // create an instance of the class
   myInstance = new MyClass("VALUE1", "VALUE2");
 
@@ -54,7 +53,7 @@ function setup() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);   
+  background(135, 206, 235); 
   // call a method on the instance
   myInstance.myMethod();
 
