@@ -112,7 +112,3 @@ function drawHouse(x, y, col) {
   fill(255); // White window color
   rect(x + 5, y + 5, 10, 10); // Window in the house
 }
-// mousePressed() function is called once after every time a mouse button is pressed
-function mousePressed() {
-    // code to run when mouse is pressed
-}
