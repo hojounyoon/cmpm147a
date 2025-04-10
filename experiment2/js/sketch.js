@@ -35,7 +35,7 @@ function resizeScreen() {
 }
 
 // setup() function is called once when the program starts
-function setup() {
+function setup() {  
   canvasContainer = $("#canvas-container");
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
