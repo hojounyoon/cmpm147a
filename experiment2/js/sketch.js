@@ -37,14 +37,10 @@ function resizeScreen() {
 let seed = 0;
 
 // setup() function is called once when the program starts
-function setup() { 
+function setup() {  
   canvasContainer = $("#canvas-container");
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
-
-  // create an instance of the class
-  myInstance = new MyClass("VALUE1", "VALUE2");
-
   $(window).resize(function() {
     resizeScreen();
   });
