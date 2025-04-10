@@ -38,6 +38,8 @@ let seed = 0;
 
 // setup() function is called once when the program starts
 function setup() {  
+  createCanvas(400, 200);
+  createButton("reimagine").mousePressed(() => seed++);
   canvasContainer = $("#canvas-container");
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
@@ -49,7 +51,8 @@ function setup() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);    
+  randomSeed(seed);
+  background(135, 206, 235);
 
   // call a method on the instance
   myInstance.myMethod();
