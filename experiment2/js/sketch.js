@@ -71,17 +71,7 @@ function draw() {
   textStyle(BOLD);
   textSize(140);
   text("p5*", centerHorz - 105, centerVert + 40);
-}
 
-/* exported setup, draw */
-let seed = 0;
-
-function setup() {
-  createCanvas(400, 200);
-  createButton("reimagine").mousePressed(() => seed++);
-}
-
-function draw() {
   randomSeed(seed);
   background(135, 206, 235);
 
