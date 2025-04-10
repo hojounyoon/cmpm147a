@@ -99,9 +99,18 @@ function draw() {
   // Waves
   fill(255, 255, 255, 120); // semi-transparent white
   noStroke();
+  let oceanWidth = width / 1.5;  // Ocean width to limit waveX
+  let oceanHeight = height / 3;  // Ocean height for waveY oscillation
+  
   for (let i = 0; i < 8; i++) {
-    let waveX = random(0, width / 1.5);
-    let waveY = random(height / 1.5, height / 1.5 + height / 3);
+    // Wave X moves back and forth, within ocean width
+    let waveX = (i * oceanWidth / 8) + (sin(millis() / 1000 + i) * 40);
+    waveX = constrain(waveX, 0, oceanWidth); // Keep wave X within the ocean boundary
+    
+    // Wave Y oscillates within the ocean's vertical bounds
+    let waveY = height / 1.5 + sin(millis() / 1000 + i) * (oceanHeight / 2); // Adjust to ocean height range
+    waveY = constrain(waveY, height / 1.5, height / 1.5 + oceanHeight); // Keep wave Y within ocean's height
+    
     arc(waveX, waveY, 30, 15, PI, TWO_PI); // semi-circle wave
   }
   
