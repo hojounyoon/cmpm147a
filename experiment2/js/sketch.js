@@ -14,7 +14,7 @@ const VALUE2 = 2;
 let myInstance;
 let canvasContainer;
 var centerHorz, centerVert;
-let seed = 0;
+let seed = 42;
 
 class MyClass {
     constructor(param1, param2) {
@@ -38,6 +38,7 @@ function resizeScreen() {
 // setup() function is called once when the program starts
 function setup() {
   canvasContainer = $("#canvas-container");
+  createButton("reimagine").mousePressed(() => seed++);
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
   $(window).resize(function() {
