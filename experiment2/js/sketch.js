@@ -14,7 +14,7 @@ const VALUE2 = 2;
 let myInstance;
 let canvasContainer;
 var centerHorz, centerVert;
-let seed = 42;
+let seed = 0;
 
 class MyClass {
     constructor(param1, param2) {
