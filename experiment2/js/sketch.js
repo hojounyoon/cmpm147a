@@ -75,7 +75,7 @@ function draw() {
   for (let i = 0; i < 3; i++) {
     let x = random(width);
     let y = random(height / 3);
-    let size = random(40, 70);
+    let size = random(80, 120);
     drawCloud(x, y, size);
   }
 
@@ -94,12 +94,12 @@ function draw() {
     let waveY = height / 1.5 + sin(millis() / 1000 + i) * (oceanHeight / 2); // Adjust to ocean height range
     waveY = constrain(waveY, height / 1.5, height / 1.5 + oceanHeight); // Keep wave Y within ocean's height
     
-    arc(waveX, waveY, 30, 15, PI, TWO_PI); // semi-circle wave
+    arc(waveX, waveY, 60, 30, PI, TWO_PI); // semi-circle wave
   }
   
   // Houses
-  drawHouse(width / 1.1, height * 2 / 3 - 20, color(255)); // White square house
-  drawHouse(width / 1.25, height * 2 / 3 - 20, color(139, 69, 19)); // Brown square house
+  drawHouse(width / 1.1, height * 2 / 3 - 40, color(255)); // White square house
+  drawHouse(width / 1.25, height * 2 / 3 - 40, color(139, 69, 19)); // Brown square house
 }
 
 function drawCloud(x, y, size) {
@@ -113,13 +113,13 @@ function drawCloud(x, y, size) {
 function drawHouse(x, y, col) {
   // House as a square base
   fill(col);
-  rect(x, y, 20, 20); // Square house
+  rect(x, y, 40, 40); // Square house
   
   // Optional: Roof as a triangle on top
   fill(150, 75, 0); // Brown color for the roof
-  triangle(x, y, x + 20, y, x + 10, y - 10); // Roof above square
+  triangle(x, y, x + 40, y, x + 20, y - 20); // Roof above square
   
   // Optional: Add a window
   fill(255); // White window color
-  rect(x + 5, y + 5, 10, 10); // Window in the house
+  rect(x + 10, y + 10, 20, 20); // Window in the house
 }
