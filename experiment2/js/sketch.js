@@ -69,7 +69,7 @@ function draw() {
   
   // Grey buffer rectangle between ocean and wet sand
   fill(169, 169, 169); // Same grey as wet sand
-  rect(width / 1.5 - 1, height * 2 / 3, 5, height / 3); // Thin vertical line
+  rect(width / 1.5 - 1, height * 2 / 3, 15, height / 3); // Thin vertical line
   
   // Clouds
   for (let i = 0; i < 3; i++) {
