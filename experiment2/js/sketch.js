@@ -37,8 +37,6 @@ function resizeScreen() {
 
 // setup() function is called once when the program starts
 function setup() {
-  createCanvas(400, 200);
-  createButton("reimagine").mousePressed(() => seed++);
   canvasContainer = $("#canvas-container");
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
