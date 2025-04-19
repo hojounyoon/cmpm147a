@@ -41,10 +41,10 @@ function setup() {
   myInstance = new MyClass("VALUE1", "VALUE2");
 
   // Generate the dungeon grid
-  grid = generateGrid(40, 30); // Size of the dungeon grid
+  grid = generateGrid(100, 50); // Size of the dungeon grid
 
   createButton("Reseed").mousePressed(() => {
-    grid = generateGrid(60, 50); // regenerate with same size
+    grid = generateGrid(40, 30); // regenerate with same size
   });
 
   $(window).resize(function() {
