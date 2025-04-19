@@ -43,6 +43,8 @@ function setup() {
   // Generate the dungeon grid
   grid = generateGrid(40, 30); // Size of the dungeon grid
 
+  select("#reseedButton").mousePressed(reseed);
+
   $(window).resize(function() {
     resizeScreen();
   });
