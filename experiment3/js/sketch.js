@@ -23,6 +23,20 @@ class MyClass {
     }
 }
 
+function placeTile(i, j, ti, tj) {
+  image(
+    spriteSheet,
+    j * tileSize,
+    i * tileSize,
+    tileSize,
+    tileSize,
+    ti * tileSize,
+    tj * tileSize,
+    tileSize,
+    tileSize
+  );
+}
+
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2;
   centerVert = canvasContainer.height() / 2;
