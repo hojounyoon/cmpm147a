@@ -23,20 +23,6 @@ class MyClass {
     }
 }
 
-function placeTile(i, j, ti, tj) {
-  image(
-    spriteSheet,
-    j * tileSize,
-    i * tileSize,
-    tileSize,
-    tileSize,
-    ti * tileSize,
-    tj * tileSize,
-    tileSize,
-    tileSize
-  );
-}
-
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2;
   centerVert = canvasContainer.height() / 2;
@@ -77,12 +63,10 @@ function draw() {
                 fill(60);          // Dungeon wall = dark gray
                 noStroke();
                 rect(j * 16, i * 16, 16, 16);
-                drawContext(grid, i, j, "_", 6, 3);
             } else if (tile === ".") {
                 fill(120);         // Dungeon floor = lighter gray
                 noStroke();
                 rect(j * 16, i * 16, 16, 16);
-                drawContext(grid, i, j, ".", 4, 2);
             }
         }
     }
@@ -165,12 +149,6 @@ function gridCode(grid, i, j, target) {
   let west  = gridCheck(grid, i, j - 1, target) ? 1 : 0;
 
   return (north << 0) + (south << 1) + (east << 2) + (west << 3);
-}
-
-function drawContext(grid, i, j, target, ti, tj) {
-  const code = gridCode(grid, i, j, target);
-  const [tiOffset, tjOffset] = lookup[code];
-  placeTile(i, j, ti + tiOffset, tj + tjOffset);
 }
 
 const lookup = [
