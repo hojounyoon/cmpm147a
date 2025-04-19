@@ -51,28 +51,23 @@ function setup() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);    
-    
-  // Call a method on the instance (optional)
-  myInstance.myMethod();
+    background(20);
 
-  // Set up rotation for the rectangle (optional)
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
-  noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[i].length; j++) {
+      const tile = grid[i][j];
 
-  // Draw the dungeon grid
-  drawGrid(grid);
-
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
+      if (tile === "_") {
+        fill(60);          // Dungeon wall = dark gray
+        noStroke();
+        rect(j * 16, i * 16, 16, 16);
+      } else if (tile === ".") {
+        fill(120);         // Dungeon floor = lighter gray
+        noStroke();
+        rect(j * 16, i * 16, 16, 16);
+      }
+    }
+  }
 }
 
 function generateGrid(numCols, numRows) {
@@ -135,26 +130,6 @@ function carveHorizontalTunnel(grid, x1, x2, y) {
 function carveVerticalTunnel(grid, y1, y2, x) {
   for (let y = min(y1, y2); y <= max(y1, y2); y++) {
     grid[y][x] = ".";
-  }
-}
-
-function drawGrid(grid) {
-  background(20);
-
-  for (let i = 0; i < grid.length; i++) {
-    for (let j = 0; j < grid[i].length; j++) {
-      const tile = grid[i][j];
-
-      if (tile === "_") {
-        fill(60);          // Dungeon wall = dark gray
-        noStroke();
-        rect(j * 16, i * 16, 16, 16);
-      } else if (tile === ".") {
-        fill(120);         // Dungeon floor = lighter gray
-        noStroke();
-        rect(j * 16, i * 16, 16, 16);
-      }
-    }
   }
 }
 
