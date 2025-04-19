@@ -1,8 +1,8 @@
-// sketch.js - Dungeon generation and rendering
+// sketch.js - purpose and description here
 // Author: Your Name
-// Date: Updated for clarity
+// Date:
 
-// Constants
+// Constants - User-servicable parts
 const VALUE1 = 1;
 const VALUE2 = 2;
 
@@ -10,9 +10,8 @@ const VALUE2 = 2;
 let myInstance;
 let canvasContainer;
 let centerHorz, centerVert;
-let grid; // Holds the generated dungeon grid
+let grid; // Add a global variable for the grid
 
-// MyClass Definition
 class MyClass {
     constructor(param1, param2) {
         this.property1 = param1;
@@ -20,73 +19,10 @@ class MyClass {
     }
 
     myMethod() {
-        // Code to run when method is called, could be used for game logic or drawing logic
-    }
-
-    // Dungeon generation
-    generateDungeon(numCols, numRows) {
-        let grid = [];
-        for (let i = 0; i < numRows; i++) {
-            let row = [];
-            for (let j = 0; j < numCols; j++) {
-                row.push("_"); // Initialize all tiles as walls
-            }
-            grid.push(row);
-        }
-
-        const numRooms = 10;
-        const rooms = [];
-
-        for (let n = 0; n < numRooms; n++) {
-            let roomWidth = floor(random(4, 8));
-            let roomHeight = floor(random(4, 8));
-            let x = floor(random(1, numCols - roomWidth - 1));
-            let y = floor(random(1, numRows - roomHeight - 1));
-
-            let newRoom = { x, y, w: roomWidth, h: roomHeight };
-
-            // Place room floor tiles (".")
-            for (let i = y; i < y + roomHeight; i++) {
-                for (let j = x; j < x + roomWidth; j++) {
-                    grid[i][j] = ".";
-                }
-            }
-
-            // Connect to the previous room
-            if (rooms.length > 0) {
-                let prev = rooms[rooms.length - 1];
-                let prevCenter = [prev.x + floor(prev.w / 2), prev.y + floor(prev.h / 2)];
-                let newCenter = [x + floor(roomWidth / 2), y + floor(roomHeight / 2)];
-
-                if (random() < 0.5) {
-                    this.carveHorizontalTunnel(grid, prevCenter[0], newCenter[0], prevCenter[1]);
-                    this.carveVerticalTunnel(grid, prevCenter[1], newCenter[1], newCenter[0]);
-                } else {
-                    this.carveVerticalTunnel(grid, prevCenter[1], newCenter[1], newCenter[0]);
-                    this.carveHorizontalTunnel(grid, prevCenter[0], newCenter[0], newCenter[1]);
-                }
-            }
-
-            rooms.push(newRoom);
-        }
-
-        return grid;
-    }
-
-    carveHorizontalTunnel(grid, x1, x2, y) {
-        for (let x = min(x1, x2); x <= max(x1, x2); x++) {
-            grid[y][x] = ".";
-        }
-    }
-
-    carveVerticalTunnel(grid, y1, y2, x) {
-        for (let y = min(y1, y2); y <= max(y1, y2); y++) {
-            grid[y][x] = ".";
-        }
+        // code to run when method is called
     }
 }
 
-// Resize the canvas when window size changes
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2;
   centerVert = canvasContainer.height() / 2;
@@ -96,53 +32,144 @@ function resizeScreen() {
 
 // setup() function is called once when the program starts
 function setup() {
-  // Create the canvas
+  // place our canvas, making it fit our container
   canvasContainer = $("#canvas-container");
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
-
-  // Create an instance of MyClass
+  
+  // Create an instance of the class
   myInstance = new MyClass("VALUE1", "VALUE2");
 
-  // Initialize grid with generated dungeon
-  grid = myInstance.generateDungeon(30, 20); // Change grid size as needed
+  // Generate the dungeon grid
+  grid = generateGrid(40, 30); // Size of the dungeon grid
 
-  // Resize canvas when the window size changes
   $(window).resize(function() {
     resizeScreen();
   });
   resizeScreen();
 }
 
-// draw() function is called repeatedly for animation
+// draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);
-  
-  // Example method call from the instance
+  background(220);    
+    
+  // Call a method on the instance (optional)
   myInstance.myMethod();
+
+  // Set up rotation for the rectangle (optional)
+  push(); // Save the current drawing context
+  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
+  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
+  fill(234, 31, 81);
+  noStroke();
+  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
+  pop(); // Restore the original drawing context
 
   // Draw the dungeon grid
   drawGrid(grid);
+
+  // The text is not affected by the translate and rotate
+  fill(255);
+  textStyle(BOLD);
+  textSize(140);
+  text("p5*", centerHorz - 105, centerVert + 40);
 }
 
-// Draw the dungeon grid to the canvas
+function generateGrid(numCols, numRows) {
+  let grid = [];
+  for (let i = 0; i < numRows; i++) {
+    let row = [];
+    for (let j = 0; j < numCols; j++) {
+      row.push("_"); // Initialize the grid with walls
+    }
+    grid.push(row);
+  }
+  
+  // Step 2: Randomly generate dungeon rooms
+  const numRooms = 10;
+  const rooms = [];
+
+  for (let n = 0; n < numRooms; n++) {
+    let roomWidth = floor(random(4, 8));
+    let roomHeight = floor(random(4, 8));
+    let x = floor(random(1, numCols - roomWidth - 1));
+    let y = floor(random(1, numRows - roomHeight - 1));
+
+    let newRoom = { x, y, w: roomWidth, h: roomHeight };
+
+    // Place room floor tiles (".")
+    for (let i = y; i < y + roomHeight; i++) {
+      for (let j = x; j < x + roomWidth; j++) {
+        grid[i][j] = ".";
+      }
+    }
+
+    // Connect this room to the previous room
+    if (rooms.length > 0) {
+      let prev = rooms[rooms.length - 1];
+      let prevCenter = [prev.x + floor(prev.w / 2), prev.y + floor(prev.h / 2)];
+      let newCenter = [x + floor(roomWidth / 2), y + floor(roomHeight / 2)];
+
+      // Draw corridor between previous and new room centers
+      if (random() < 0.5) {
+        carveHorizontalTunnel(grid, prevCenter[0], newCenter[0], prevCenter[1]);
+        carveVerticalTunnel(grid, prevCenter[1], newCenter[1], newCenter[0]);
+      } else {
+        carveVerticalTunnel(grid, prevCenter[1], newCenter[1], newCenter[0]);
+        carveHorizontalTunnel(grid, prevCenter[0], newCenter[0], newCenter[1]);
+      }
+    }
+
+    rooms.push(newRoom);
+  }
+
+  return grid;
+}
+
+function carveHorizontalTunnel(grid, x1, x2, y) {
+  for (let x = min(x1, x2); x <= max(x1, x2); x++) {
+    grid[y][x] = ".";
+  }
+}
+
+function carveVerticalTunnel(grid, y1, y2, x) {
+  for (let y = min(y1, y2); y <= max(y1, y2); y++) {
+    grid[y][x] = ".";
+  }
+}
+
 function drawGrid(grid) {
+  background(20);
+
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid[i].length; j++) {
       const tile = grid[i][j];
 
-      // Walls
       if (tile === "_") {
-        fill(60);  // Dark gray for walls
+        fill(60);          // Dungeon wall = dark gray
         noStroke();
         rect(j * 16, i * 16, 16, 16);
-      } 
-      // Floor tiles
-      else if (tile === ".") {
-        fill(120); // Light gray for floor
+      } else if (tile === ".") {
+        fill(120);         // Dungeon floor = lighter gray
         noStroke();
         rect(j * 16, i * 16, 16, 16);
       }
     }
   }
+}
+
+function gridCheck(grid, i, j, target) {
+  if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length) {
+    return false;
+  }
+  return grid[i][j] === target;
+}
+
+function gridCode(grid, i, j, target) {
+  let north = gridCheck(grid, i - 1, j, target) ? 1 : 0;
+  let south = gridCheck(grid, i + 1, j, target) ? 1 : 0;
+  let east  = gridCheck(grid, i, j + 1, target) ? 1 : 0;
+  let west  = gridCheck(grid, i, j - 1, target) ? 1 : 0;
+
+  return (north << 0) + (south << 1) + (east << 2) + (west << 3);
 }
