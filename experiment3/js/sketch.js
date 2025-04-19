@@ -23,6 +23,14 @@ class MyClass {
     }
 }
 
+function reseed() {
+  seed = (seed | 0) + 1109;
+  randomSeed(seed);
+  noiseSeed(seed);
+  select("#seedReport").html("seed " + seed);
+  regenerateGrid();
+}
+
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2;
   centerVert = canvasContainer.height() / 2;
