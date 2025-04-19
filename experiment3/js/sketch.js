@@ -23,24 +23,11 @@ class MyClass {
     }
 }
 
-function reseed() {
-  seed = (seed | 0) + 1109;
-  randomSeed(seed);
-  noiseSeed(seed);
-  select("#seedReport").html("seed " + seed);
-  regenerateGrid();
-}
-
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2;
   centerVert = canvasContainer.height() / 2;
   console.log("Resizing...");
   resizeCanvas(canvasContainer.width(), canvasContainer.height());
-}
-
-function regenerateGrid() {
-  select("#asciiBox").value(gridToString(generateGrid(numCols, numRows)));
-  reparseGrid();
 }
 
 // setup() function is called once when the program starts
