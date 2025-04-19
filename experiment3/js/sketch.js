@@ -69,23 +69,23 @@ function setup() {
 function draw() {
     background(20);
 
-  for (let i = 0; i < grid.length; i++) {
-    for (let j = 0; j < grid[i].length; j++) {
-      const tile = grid[i][j];
-
-      if (tile === "_") {
-        fill(60);          // Dungeon wall = dark gray
-        noStroke();
-        rect(j * 16, i * 16, 16, 16);
-        drawContext(grid, i, j, "_", 6, 3);
-      } else if (tile === ".") {
-        fill(120);         // Dungeon floor = lighter gray
-        noStroke();
-        rect(j * 16, i * 16, 16, 16);
-        drawContext(grid, i, j, ".", 4, 2);
-      }
+    for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[i].length; j++) {
+            const tile = grid[i][j];
+    
+            if (tile === "_") {
+                fill(60);          // Dungeon wall = dark gray
+                noStroke();
+                rect(j * 16, i * 16, 16, 16);
+                drawContext(grid, i, j, "_", 6, 3);
+            } else if (tile === ".") {
+                fill(120);         // Dungeon floor = lighter gray
+                noStroke();
+                rect(j * 16, i * 16, 16, 16);
+                drawContext(grid, i, j, ".", 4, 2);
+            }
+        }
     }
-  }
 }
 
 function generateGrid(numCols, numRows) {
