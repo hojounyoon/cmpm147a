@@ -173,3 +173,23 @@ function gridCode(grid, i, j, target) {
 
   return (north << 0) + (south << 1) + (east << 2) + (west << 3);
 }
+
+const lookup = [
+  [0, 0], // 0000 (all walls)
+  [1, 0], // 0001 (north only)
+  [2, 0], // 0010 (south only)
+  [3, 0], // 0011 (north + south)
+  [0, 1], // 0100 (east only)
+  [1, 1], // 0101 (north + east)
+  [2, 1], // 0110 (south + east)
+  [3, 1], // 0111 (north + south + east)
+  [0, 2], // 1000 (west only)
+  [1, 2], // 1001 (north + west)
+  [2, 2], // 1010 (south + west)
+  [3, 2], // 1011 (north + south + west)
+  [0, 3], // 1100 (east + west)
+  [1, 3], // 1101 (north + east + west)
+  [2, 3], // 1110 (south + east + west)
+  [3, 3]  // 1111 (all directions)
+];
+
