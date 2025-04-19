@@ -38,6 +38,11 @@ function resizeScreen() {
   resizeCanvas(canvasContainer.width(), canvasContainer.height());
 }
 
+function regenerateGrid() {
+  select("#asciiBox").value(gridToString(generateGrid(numCols, numRows)));
+  reparseGrid();
+}
+
 // setup() function is called once when the program starts
 function setup() {
   // place our canvas, making it fit our container
