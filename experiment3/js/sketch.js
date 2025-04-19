@@ -44,7 +44,7 @@ function setup() {
   grid = generateGrid(40, 30); // Size of the dungeon grid
 
   createButton("Reseed").mousePressed(() => {
-    grid = generateGrid(40, 30); // regenerate with same size
+    grid = generateGrid(60, 50); // regenerate with same size
   });
 
   $(window).resize(function() {
