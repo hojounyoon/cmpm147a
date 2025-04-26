@@ -61,6 +61,8 @@ function setup() {
   rebuildWorld(input.value());
 }
 
+function p3_setup() {}
+
 function p3_worldKeyChanged(key) {
   worldSeed = XXH.h32(key, 0); // Set random seed based on key
   noiseSeed(worldSeed);
