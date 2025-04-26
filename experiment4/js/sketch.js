@@ -25,13 +25,10 @@ function preload() {
 }
 
 function setup() {
-  canvasContainer = $("#canvas-container");
-  let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
-  canvas.parent("canvas-container");
-  $(window).resize(function () {
-    resizeScreen();
-  });
-  resizeScreen();
+  createCanvas(windowWidth, windowHeight);
+  angleMode(DEGREES);
+  console.log('Canvas Size:', width, height); // Check the canvas size
+  p3_setup();
 }
 
 function resizeScreen() {
