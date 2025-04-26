@@ -24,16 +24,16 @@ function preload() {
   p3_preload();
 }
 
-function setup() {
-  let canvas = createCanvas(windowWidth, windowHeight);
-  canvas.parent('canvas-container');
-  
-  worldSeed = XXH.h32("default", 0).toNumber();
-  noiseSeed(worldSeed);
-  randomSeed(worldSeed);
-
-  initializeWorld();
+function setup() {  
+  canvasContainer = $("#canvas-container");
+  let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
+  canvas.parent("canvas-container");
+  $(window).resize(function() {
+    resizeScreen();
+  });
+  resizeScreen();
 }
+
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
