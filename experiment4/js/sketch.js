@@ -1,31 +1,44 @@
-"use strict";
+// sketch.js - purpose and description here
+// Author: Your Name
+// Date:
 
-/* global p5 */
-/* exported preload, setup, draw, mouseClicked */
+// Here is how you might set up an OOP p5.js project
+// Note that p5.js looks for a file called sketch.js
 
-// --- ENGINE PART START ---
+// Constants - User-servicable parts
+// In a longer project I like to put these in a separate file
+const VALUE1 = 1;
+const VALUE2 = 2;
 
-let worldSeed;
-let camera_x = 0;
-let camera_y = 0;
-let target_camera_x = 0;
-let target_camera_y = 0;
-let target_camera_scale = 1;
-let camera_scale = 1;
-let is_dragging = false;
-let dragging_start_x, dragging_start_y;
-let dragging_camera_start_x, dragging_camera_start_y;
-let selected_tile_i = 0;
-let selected_tile_j = 0;
-let selected_screen_x = 0;
-let selected_screen_y = 0;
+// Globals
+let myInstance;
+let canvasContainer;
+var centerHorz, centerVert;
+let seed = 42;
 
-function preload() {
-  p3_preload();
+class MyClass {
+    constructor(param1, param2) {
+        this.property1 = param1;
+        this.property2 = param2;
+    }
+
+    myMethod() {
+        // code to run when method is called
+    }
 }
 
-function setup() {  
+function resizeScreen() {
+  centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
+  centerVert = canvasContainer.height() / 2; // Adjusted for drawing logic
+  console.log("Resizing...");
+  resizeCanvas(canvasContainer.width(), canvasContainer.height());
+  // redrawCanvas(); // Redraw everything based on new size
+}
+
+// setup() function is called once when the program starts
+function setup() {
   canvasContainer = $("#canvas-container");
+  createButton("reimagine").mousePressed(() => seed++);
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
   $(window).resize(function() {
@@ -33,124 +46,6 @@ function setup() {
   });
   resizeScreen();
 }
-
-
-function resizeScreen() {
-  centerHorz = canvasContainer.width() / 2;
-  centerVert = canvasContainer.height() / 2;
-  resizeCanvas(canvasContainer.width(), canvasContainer.height());
-}
-
-function mouseClicked() {
-  let world_pos = screenToWorld(mouseX, mouseY);
-  p3_tileClicked(selected_tile_i, selected_tile_j); // Handle tile click
-}
-
-function mousePressed() {
-  if (mouseButton === LEFT) {
-    is_dragging = true;
-    dragging_start_x = mouseX;
-    dragging_start_y = mouseY;
-    dragging_camera_start_x = target_camera_x;
-    dragging_camera_start_y = target_camera_y;
-  }
-}
-
-function mouseReleased() {
-  if (mouseButton === LEFT) {
-    is_dragging = false;
-  }
-}
-
-function keyTyped() {
-  p3_worldKeyChanged(key);
-}
-
-function draw() {
-  // Update camera position with smooth transition
-  camera_x = camera_x * 0.85 + target_camera_x * 0.15;
-  camera_y = camera_y * 0.85 + target_camera_y * 0.15;
-  camera_scale = camera_scale * 0.85 + target_camera_scale * 0.15;
-
-  // Handle dragging of the camera
-  if (is_dragging) {
-    let delta_x = (dragging_start_x - mouseX) / camera_scale;
-    let delta_y = (dragging_start_y - mouseY) / camera_scale;
-    target_camera_x = dragging_camera_start_x + delta_x;
-    target_camera_y = dragging_camera_start_y + delta_y;
-  }
-
-  background(0);
-
-  push();
-  translate(width / 2, height / 2);
-  scale(camera_scale);
-  translate(-camera_x, -camera_y);
-
-  p3_drawBefore();
-
-  let tw = p3_tileWidth();
-  let th = p3_tileHeight();
-
-  let worldTL = screenToWorld(0, 0);
-  let worldBR = screenToWorld(width, height);
-
-  let buffer = 3; // Buffer space around visible tiles
-
-  let i0 = Math.floor(worldTL[0] / tw) - buffer;
-  let i1 = Math.floor(worldBR[0] / tw) + buffer;
-  let j0 = Math.floor(worldTL[1] / th) - buffer;
-  let j1 = Math.floor(worldBR[1] / th) + buffer;
-
-  let closest_dist = 9999999;
-
-  // Loop through tiles within the camera's view
-  for (let j = j0; j <= j1; j++) {
-    for (let i = i0; i <= i1; i++) {
-      let center_x = (i + 0.5) * tw;
-      let center_y = (j + 0.5) * th;
-
-      let screen_pos = worldToScreen(center_x, center_y);
-      let d = dist(mouseX, mouseY, screen_pos[0], screen_pos[1]);
-      if (d < closest_dist) {
-        closest_dist = d;
-        selected_tile_i = i;
-        selected_tile_j = j;
-        selected_screen_x = screen_pos[0];
-        selected_screen_y = screen_pos[1];
-      }
-
-      // Draw tile
-      push();
-      translate(center_x, center_y);
-      p3_drawTile(i, j);
-      pop();
-    }
-  }
-
-  // Highlight selected tile
-  p3_drawSelectedTile(selected_tile_i, selected_tile_j, selected_screen_x, selected_screen_y);
-
-  p3_drawAfter();
-  pop();
-}
-
-function worldToScreen(x, y) {
-  let sx = (x - camera_x) * camera_scale + width / 2;
-  let sy = (y - camera_y) * camera_scale + height / 2;
-  return [sx, sy];
-}
-
-function screenToWorld(x, y) {
-  let wx = (x - width / 2) / camera_scale + camera_x;
-  let wy = (y - height / 2) / camera_scale + camera_y;
-  return [wx, wy];
-}
-
-// --- ENGINE PART END ---
-
-
-// --- YOUR MY_WORLD.JS PART START ---
 
 function p3_preload() {
   // No assets to preload
