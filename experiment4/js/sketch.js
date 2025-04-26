@@ -122,4 +122,19 @@ function p3_drawAfter() {
   text(frameRate(), 20, 20);
 }
 
-// --- YOUR MY_WORLD.JS PART END ---
+function draw() {
+  background(200); // Light gray background so you can see your tiles
+
+  // Example: Draw a few tiles
+  push();
+  translate(centerHorz, centerVert);
+  for (let i = -5; i <= 5; i++) {
+    for (let j = -5; j <= 5; j++) {
+      push();
+      translate(i * p3_tileWidth(), j * p3_tileHeight());
+      p3_drawTile(i, j);
+      pop();
+    }
+  }
+  pop();
+}
