@@ -25,9 +25,14 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  angleMode(DEGREES);
-  p3_setup();
+  let canvas = createCanvas(windowWidth, windowHeight);
+  canvas.parent('canvas-container');
+  
+  worldSeed = XXH.h32("default", 0).toNumber();
+  noiseSeed(worldSeed);
+  randomSeed(worldSeed);
+
+  initializeWorld();
 }
 
 function windowResized() {
