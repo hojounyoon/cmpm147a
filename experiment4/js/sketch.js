@@ -41,6 +41,10 @@ function resizeScreen() {
   resizeCanvas(canvasContainer.width(), canvasContainer.height());
 }
 
+function windowResized() {
+  resizeScreen(); // Call the function to resize canvas
+}
+
 function mouseClicked() {
   let world_pos = screenToWorld(mouseX, mouseY);
   p3_tileClicked(selected_tile_i, selected_tile_j);
