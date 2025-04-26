@@ -34,10 +34,6 @@ function setup() {
   resizeScreen();
 }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
-
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2;
   centerVert = canvasContainer.height() / 2;
