@@ -24,12 +24,16 @@ function preload() {
   p3_preload();
 }
 
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-  angleMode(DEGREES);
-  console.log('Canvas Size:', width, height); // Check the canvas size
-  p3_setup();
+function setup() {  
+  canvasContainer = $("#canvas-container");
+  let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
+  canvas.parent("canvas-container");
+  $(window).resize(function() {
+    resizeScreen();
+  });
+  resizeScreen();
 }
+
 
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2;
