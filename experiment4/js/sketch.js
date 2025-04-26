@@ -46,15 +46,6 @@ function setup() {
   resizeScreen();
 }
 
-
-function p3_preload() {
-  // No assets to preload
-}
-
-function p3_setup() {
-  // Setup for world if needed
-}
-
 function p3_worldKeyChanged(key) {
   worldSeed = XXH.h32(key, 0); // Set random seed based on key
   noiseSeed(worldSeed);
@@ -75,10 +66,6 @@ function p3_tileClicked(i, j) {
   let key = [i, j];
   clicks[key] = 1 + (clicks[key] | 0); // Increment click count on tile
   console.log("Tile clicked:", i, j, "Click count:", clicks[key]);
-}
-
-function p3_drawBefore() {
-  // Draw something before rendering tiles (if needed)
 }
 
 function p3_drawTile(i, j) {
@@ -132,7 +119,7 @@ function p3_drawSelectedTile(i, j, x, y) {
 }
 
 function p3_drawAfter() {
-  // Draw something after rendering tiles (if needed)
+  text(frameRate(), 20, 20);
 }
 
 // --- YOUR MY_WORLD.JS PART END ---
