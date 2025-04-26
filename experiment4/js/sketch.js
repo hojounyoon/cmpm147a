@@ -1,255 +1,154 @@
-// sketch.js - purpose and description here
-// Author: Your Name
-// Date:
-
-"use strict";
-
-/* global XXH */
-/* exported --
-    p3_preload
-    p3_setup
-    p3_worldKeyChanged
-    p3_tileWidth
-    p3_tileHeight
-    p3_tileClicked
-    p3_drawBefore
-    p3_drawTile
-    p3_drawSelectedTile
-    p3_drawAfter
-*/
-
-p3_preload();
-p3_setup();
-p3_worldKeyChanged;
-p3_tileWidth;
-p3_tileHeight;
-p3_tileClicked;
-p3_drawBefore;
-p3_drawTile;
-p3_drawSelectedTile;
-p3_drawAfter;
-
-
-function p3_preload() {}
-
-function resizeScreen() {
-  centerHorz = canvasContainer.width() / 2;
-  centerVert = canvasContainer.height() / 2;
-  console.log("Resizing...");
-  resizeCanvas(canvasContainer.width(), canvasContainer.height());
-}
-
 "use strict";
 
 /* global p5 */
 /* exported preload, setup, draw, mouseClicked */
 
-// Project base code provided by {amsmith,ikarth}@ucsc.edu
+// --- ENGINE PART START ---
 
-
-let tile_width_step_main; // A width step is half a tile's width
-let tile_height_step_main; // A height step is half a tile's height
-
-// Global variables. These will mostly be overwritten in setup().
-let tile_rows, tile_columns;
-let camera_offset;
-let camera_velocity;
-
-/////////////////////////////
-// Transforms between coordinate systems
-// These are actually slightly weirder than in full 3d...
-/////////////////////////////
-function worldToScreen([world_x, world_y], [camera_x, camera_y]) {
-  let i = (world_x - world_y) * tile_width_step_main;
-  let j = (world_x + world_y) * tile_height_step_main;
-  return [i + camera_x, j + camera_y];
-}
-
-function worldToCamera([world_x, world_y], [camera_x, camera_y]) {
-  let i = (world_x - world_y) * tile_width_step_main;
-  let j = (world_x + world_y) * tile_height_step_main;
-  return [i, j];
-}
-
-function tileRenderingOrder(offset) {
-  return [offset[1] - offset[0], offset[0] + offset[1]];
-}
-
-function screenToWorld([screen_x, screen_y], [camera_x, camera_y]) {
-  screen_x -= camera_x;
-  screen_y -= camera_y;
-  screen_x /= tile_width_step_main * 2;
-  screen_y /= tile_height_step_main * 2;
-  screen_y += 0.5;
-  return [Math.floor(screen_y + screen_x), Math.floor(screen_y - screen_x)];
-}
-
-function cameraToWorldOffset([camera_x, camera_y]) {
-  let world_x = camera_x / (tile_width_step_main * 2);
-  let world_y = camera_y / (tile_height_step_main * 2);
-  return { x: Math.round(world_x), y: Math.round(world_y) };
-}
-
-function worldOffsetToCamera([world_x, world_y]) {
-  let camera_x = world_x * (tile_width_step_main * 2);
-  let camera_y = world_y * (tile_height_step_main * 2);
-  return new p5.Vector(camera_x, camera_y);
-}
+let worldSeed;
+let camera_x = 0;
+let camera_y = 0;
+let target_camera_x = 0;
+let target_camera_y = 0;
+let target_camera_scale = 1;
+let camera_scale = 1;
+let is_dragging = false;
+let dragging_start_x, dragging_start_y;
+let dragging_camera_start_x, dragging_camera_start_y;
+let selected_tile_i = 0;
+let selected_tile_j = 0;
+let selected_screen_x = 0;
+let selected_screen_y = 0;
 
 function preload() {
-  if (window.p3_preload) {
-    window.p3_preload();
-  }
+  p3_preload();
 }
 
 function setup() {
-  let canvas = createCanvas(800, 400);
-  canvas.parent("container");
-
-  camera_offset = new p5.Vector(-width / 2, height / 2);
-  camera_velocity = new p5.Vector(0, 0);
-
-  if (window.p3_setup) {
-    window.p3_setup();
-  }
-
-  let label = createP();
-  label.html("World key: ");
-  label.parent("container");
-
-  let input = createInput("xyzzy");
-  input.parent(label);
-  input.input(() => {
-    rebuildWorld(input.value());
-  });
-
-  createP("Arrow keys scroll. Clicking changes tiles.").parent("container");
-
-  rebuildWorld(input.value());
+  createCanvas(windowWidth, windowHeight);
+  angleMode(DEGREES);
+  p3_setup();
 }
 
-function rebuildWorld(key) {
-  if (window.p3_worldKeyChanged) {
-    window.p3_worldKeyChanged(key);
-  }
-  tile_width_step_main = window.p3_tileWidth ? window.p3_tileWidth() : 32;
-  tile_height_step_main = window.p3_tileHeight ? window.p3_tileHeight() : 14.5;
-  tile_columns = Math.ceil(width / (tile_width_step_main * 2));
-  tile_rows = Math.ceil(height / (tile_height_step_main * 2));
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 function mouseClicked() {
-  let world_pos = screenToWorld(
-    [0 - mouseX, mouseY],
-    [camera_offset.x, camera_offset.y]
-  );
+  let world_pos = screenToWorld(mouseX, mouseY);
+  p3_tileClicked(selected_tile_i, selected_tile_j);
+}
 
-  if (window.p3_tileClicked) {
-    window.p3_tileClicked(world_pos[0], world_pos[1]);
+function mousePressed() {
+  if (mouseButton === LEFT) {
+    is_dragging = true;
+    dragging_start_x = mouseX;
+    dragging_start_y = mouseY;
+    dragging_camera_start_x = target_camera_x;
+    dragging_camera_start_y = target_camera_y;
   }
-  return false;
+}
+
+function mouseReleased() {
+  if (mouseButton === LEFT) {
+    is_dragging = false;
+  }
+}
+
+function keyTyped() {
+  p3_worldKeyChanged(key);
 }
 
 function draw() {
-  // Keyboard controls!
-  if (keyIsDown(LEFT_ARROW)) {
-    camera_velocity.x -= 1;
-  }
-  if (keyIsDown(RIGHT_ARROW)) {
-    camera_velocity.x += 1;
-  }
-  if (keyIsDown(DOWN_ARROW)) {
-    camera_velocity.y -= 1;
-  }
-  if (keyIsDown(UP_ARROW)) {
-    camera_velocity.y += 1;
-  }
+  // Update camera position
+  camera_x = camera_x * 0.85 + target_camera_x * 0.15;
+  camera_y = camera_y * 0.85 + target_camera_y * 0.15;
+  camera_scale = camera_scale * 0.85 + target_camera_scale * 0.15;
 
-  let camera_delta = new p5.Vector(0, 0);
-  camera_velocity.add(camera_delta);
-  camera_offset.add(camera_velocity);
-  camera_velocity.mult(0.95); // cheap easing
-  if (camera_velocity.mag() < 0.01) {
-    camera_velocity.setMag(0);
+  // Dragging camera
+  if (is_dragging) {
+    let delta_x = (dragging_start_x - mouseX) / camera_scale;
+    let delta_y = (dragging_start_y - mouseY) / camera_scale;
+    target_camera_x = dragging_camera_start_x + delta_x;
+    target_camera_y = dragging_camera_start_y + delta_y;
   }
 
-  let world_pos = screenToWorld(
-    [0 - mouseX, mouseY],
-    [camera_offset.x, camera_offset.y]
-  );
-  let world_offset = cameraToWorldOffset([camera_offset.x, camera_offset.y]);
+  background(0);
 
-  background(100);
-
-  if (window.p3_drawBefore) {
-    window.p3_drawBefore();
-  }
-
-  let overdraw = 0.1;
-
-  let y0 = Math.floor((0 - overdraw) * tile_rows);
-  let y1 = Math.floor((1 + overdraw) * tile_rows);
-  let x0 = Math.floor((0 - overdraw) * tile_columns);
-  let x1 = Math.floor((1 + overdraw) * tile_columns);
-
-  for (let y = y0; y < y1; y++) {
-    for (let x = x0; x < x1; x++) {
-      drawTile(tileRenderingOrder([x + world_offset.x, y - world_offset.y]), [
-        camera_offset.x,
-        camera_offset.y
-      ]); // odd row
-    }
-    for (let x = x0; x < x1; x++) {
-      drawTile(
-        tileRenderingOrder([
-          x + 0.5 + world_offset.x,
-          y + 0.5 - world_offset.y
-        ]),
-        [camera_offset.x, camera_offset.y]
-      ); // even rows are offset horizontally
-    }
-  }
-
-  describeMouseTile(world_pos, [camera_offset.x, camera_offset.y]);
-
-  if (window.p3_drawAfter) {
-    window.p3_drawAfter();
-  }
-}
-
-// Display a discription of the tile at world_x, world_y.
-function describeMouseTile([world_x, world_y], [camera_x, camera_y]) {
-  let [screen_x, screen_y] = worldToScreen(
-    [world_x, world_y],
-    [camera_x, camera_y]
-  );
-  drawTileDescription([world_x, world_y], [0 - screen_x, screen_y]);
-}
-
-function drawTileDescription([world_x, world_y], [screen_x, screen_y]) {
   push();
-  translate(screen_x, screen_y);
-  if (window.p3_drawSelectedTile) {
-    window.p3_drawSelectedTile(world_x, world_y, screen_x, screen_y);
+  translate(width / 2, height / 2);
+  scale(camera_scale);
+  translate(-camera_x, -camera_y);
+
+  p3_drawBefore();
+
+  let tw = p3_tileWidth();
+  let th = p3_tileHeight();
+
+  let worldTL = screenToWorld(0, 0);
+  let worldBR = screenToWorld(width, height);
+
+  let buffer = 3;
+
+  let i0 = Math.floor((worldTL[0]) / tw) - buffer;
+  let i1 = Math.floor((worldBR[0]) / tw) + buffer;
+  let j0 = Math.floor((worldTL[1]) / th) - buffer;
+  let j1 = Math.floor((worldBR[1]) / th) + buffer;
+
+  let closest_dist = 9999999;
+
+  for (let j = j0; j <= j1; j++) {
+    for (let i = i0; i <= i1; i++) {
+      let center_x = (i + 0.5) * tw;
+      let center_y = (j + 0.5) * th;
+
+      let screen_pos = worldToScreen(center_x, center_y);
+      let d = dist(mouseX, mouseY, screen_pos[0], screen_pos[1]);
+      if (d < closest_dist) {
+        closest_dist = d;
+        selected_tile_i = i;
+        selected_tile_j = j;
+        selected_screen_x = screen_pos[0];
+        selected_screen_y = screen_pos[1];
+      }
+
+      push();
+      translate(center_x, center_y);
+      p3_drawTile(i, j);
+      pop();
+    }
   }
+
+  p3_drawSelectedTile(selected_tile_i, selected_tile_j, selected_screen_x, selected_screen_y);
+
+  p3_drawAfter();
   pop();
 }
 
-// Draw a tile, mostly by calling the user's drawing code.
-function drawTile([world_x, world_y], [camera_x, camera_y]) {
-  let [screen_x, screen_y] = worldToScreen(
-    [world_x, world_y],
-    [camera_x, camera_y]
-  );
-  push();
-  translate(0 - screen_x, screen_y);
-  if (window.p3_drawTile) {
-    window.p3_drawTile(world_x, world_y, -screen_x, screen_y);
-  }
-  pop();
+function worldToScreen(x, y) {
+  let sx = (x - camera_x) * camera_scale + width / 2;
+  let sy = (y - camera_y) * camera_scale + height / 2;
+  return [sx, sy];
 }
 
-let worldSeed;
+function screenToWorld(x, y) {
+  let wx = (x - width / 2) / camera_scale + camera_x;
+  let wy = (y - height / 2) / camera_scale + camera_y;
+  return [wx, wy];
+}
+
+// --- ENGINE PART END ---
+
+
+// --- YOUR MY_WORLD.JS PART START ---
+
+function p3_preload() {
+  // nothing to load
+}
+
+function p3_setup() {
+  // nothing to set up
+}
 
 function p3_worldKeyChanged(key) {
   worldSeed = XXH.h32(key, 0);
@@ -265,8 +164,6 @@ function p3_tileHeight() {
   return 16;
 }
 
-let [tw, th] = [p3_tileWidth(), p3_tileHeight()];
-
 let clicks = {};
 
 function p3_tileClicked(i, j) {
@@ -274,23 +171,23 @@ function p3_tileClicked(i, j) {
   clicks[key] = 1 + (clicks[key] | 0);
 }
 
-function p3_drawBefore() {}
+function p3_drawBefore() {
+  // nothing to draw before
+}
 
 function p3_drawTile(i, j) {
   noStroke();
-
+  let tw = p3_tileWidth();
+  let th = p3_tileHeight();
   let hash = XXH.h32("tile:" + [i, j], worldSeed);
 
-  // Base green grass color (light or dark)
   if (hash % 4 === 0) {
-    fill(70, 130, 180); // Light green
+    fill(70, 130, 180); // Water
   } else {
-    fill(34, 139, 34); // Dark green
+    fill(34, 139, 34); // Land
   }
 
   push();
-
-  // Draw diamond tile
   beginShape();
   vertex(-tw, 0);
   vertex(0, th);
@@ -298,68 +195,35 @@ function p3_drawTile(i, j) {
   vertex(0, -th);
   endShape(CLOSE);
 
-  // Pink flowers (appear on 1 in 6 tiles)
   if (hash % 6 === 0) {
-    fill(255, 105, 180); // Hot pink
+    fill(255, 105, 180); // Flowers
     ellipse(-5, 5, 4, 4);
     ellipse(5, -3, 4, 4);
   }
   
-  // Blue flowers (appear on 1 in 8 tiles)
   if (hash % 8 === 0) {
-    fill(70, 130, 180); // Blue color for flowers
-    ellipse(-5, 5, 5, 5);  // Flower on the left
-    ellipse(5, -3, 5, 5);  // Flower on the right
-  }
-  
-  if (hash % 12 === 0) {
-    fill(135, 206, 250, 40); // Hot pink
-    ellipse(-5, 5, 4, 4);
-    ellipse(5, -3, 4, 4);
-  }
-
-  // Blue mist overlay (subtle and semi-transparent)
-  if (hash % 5 === 0) {
-    fill(135, 206, 250, 40); // Light blue, transparent
-    ellipse(0, 0, 40, 20);
-  }
-
-  // Rare soft sunlight spot
-  if (hash % 30 === 0) {
-    fill(255, 255, 150, 60); // Soft yellow glow
-    ellipse(0, 0, 20, 20);
-  }
-
-  // Tile click effects
-  let n = clicks[[i, j]] | 0;
-  if (n % 2 === 1) {
-    fill(135, 206, 235, 100); // More pronounced mist on click
-    ellipse(0, 0, 10, 5);
-    translate(0, -10);
-    fill(255, 255, 100, 100); // Subtle highlight
-    ellipse(0, 0, 10, 10);
+    fill(70, 130, 180); // Water puddles
+    ellipse(-5, 5, 5, 5);
+    ellipse(5, -3, 5, 5);
   }
 
   pop();
 }
 
-function p3_drawSelectedTile(i, j) {
+function p3_drawSelectedTile(i, j, x, y) {
   noFill();
-  stroke(0, 255, 0, 128);
-
-  beginShape();
-  vertex(-tw, 0);
-  vertex(0, th);
-  vertex(tw, 0);
-  vertex(0, -th);
-  endShape(CLOSE);
-
-  noStroke();
-  fill(0);
-  text("tile " + [i, j], 0, 0);
+  stroke(255, 0, 0);
+  strokeWeight(2);
+  let tw = p3_tileWidth();
+  let th = p3_tileHeight();
+  push();
+  translate(x, y);
+  rect(-tw, -th, tw * 2, th * 2);
+  pop();
 }
 
 function p3_drawAfter() {
-  // You can add any post-processing code here (e.g., frame rate display)
-  text(frameRate(), 20, 20); // Display the frame rate
+  // nothing to draw after
 }
+
+// --- YOUR MY_WORLD.JS PART END ---
