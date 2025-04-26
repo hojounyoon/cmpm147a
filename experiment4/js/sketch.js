@@ -39,8 +39,10 @@ function windowResized() {
 }
 
 function resizeScreen() {
-  let canvas = select("canvas");
-  canvas.size($(window).width(), 600);  // Adjust height as needed
+  centerHorz = canvasContainer.width() / 2;
+  centerVert = canvasContainer.height() / 2;
+  console.log("Resizing...");
+  resizeCanvas(canvasContainer.width(), canvasContainer.height());
 }
 
 function mouseClicked() {
