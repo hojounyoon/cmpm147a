@@ -123,18 +123,27 @@ function p3_drawAfter() {
 }
 
 function draw() {
-  background(200); // Light gray background so you can see your tiles
+  background(200); // Light gray background
 
-  // Example: Draw a few tiles
+  let tw = p3_tileWidth();
+  let th = p3_tileHeight();
+
   push();
   translate(centerHorz, centerVert);
-  for (let i = -5; i <= 5; i++) {
-    for (let j = -5; j <= 5; j++) {
+
+  // How many tiles do we need to fill the screen?
+  let tilesX = Math.ceil(width / tw);
+  let tilesY = Math.ceil(height / th);
+
+  for (let j = -tilesY; j <= tilesY; j++) {
+    for (let i = -tilesX; i <= tilesX; i++) {
       push();
-      translate(i * p3_tileWidth(), j * p3_tileHeight());
+      // Isometric diamond translation:
+      translate(i * tw, j * th);
       p3_drawTile(i, j);
       pop();
     }
   }
+
   pop();
 }
