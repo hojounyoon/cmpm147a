@@ -29,13 +29,7 @@ function setup() {
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
   
-  // Adjust canvas to be responsive on window resize
-  $(window).resize(function() {
-    resizeScreen();
-  });
-  
-  // Initial resizing
-  resizeScreen();
+  background(200);
 }
 
 function windowResized() {
