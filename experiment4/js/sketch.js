@@ -28,15 +28,23 @@ function setup() {
   canvasContainer = $("#canvas-container");
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
+  
+  // Adjust canvas to be responsive on window resize
   $(window).resize(function() {
     resizeScreen();
   });
+  
+  // Initial resizing
   resizeScreen();
 }
 
-
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+function resizeScreen() {
+  let canvas = select("canvas");
+  canvas.size($(window).width(), 600);  // Adjust height as needed
 }
 
 function mouseClicked() {
