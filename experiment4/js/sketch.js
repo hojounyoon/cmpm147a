@@ -24,11 +24,11 @@ function preload() {
   p3_preload();
 }
 
-function setup() {  
+function setup() {
   canvasContainer = $("#canvas-container");
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
-  $(window).resize(function() {
+  $(window).resize(function () {
     resizeScreen();
   });
   resizeScreen();
@@ -37,7 +37,6 @@ function setup() {
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2;
   centerVert = canvasContainer.height() / 2;
-  console.log("Resizing...");
   resizeCanvas(canvasContainer.width(), canvasContainer.height());
 }
 
@@ -47,7 +46,7 @@ function windowResized() {
 
 function mouseClicked() {
   let world_pos = screenToWorld(mouseX, mouseY);
-  p3_tileClicked(selected_tile_i, selected_tile_j);
+  p3_tileClicked(selected_tile_i, selected_tile_j); // Handle tile click
 }
 
 function mousePressed() {
@@ -71,12 +70,12 @@ function keyTyped() {
 }
 
 function draw() {
-  // Update camera position
+  // Update camera position with smooth transition
   camera_x = camera_x * 0.85 + target_camera_x * 0.15;
   camera_y = camera_y * 0.85 + target_camera_y * 0.15;
   camera_scale = camera_scale * 0.85 + target_camera_scale * 0.15;
 
-  // Dragging camera
+  // Handle dragging of the camera
   if (is_dragging) {
     let delta_x = (dragging_start_x - mouseX) / camera_scale;
     let delta_y = (dragging_start_y - mouseY) / camera_scale;
@@ -99,15 +98,16 @@ function draw() {
   let worldTL = screenToWorld(0, 0);
   let worldBR = screenToWorld(width, height);
 
-  let buffer = 3;
+  let buffer = 3; // Buffer space around visible tiles
 
-  let i0 = Math.floor((worldTL[0]) / tw) - buffer;
-  let i1 = Math.floor((worldBR[0]) / tw) + buffer;
-  let j0 = Math.floor((worldTL[1]) / th) - buffer;
-  let j1 = Math.floor((worldBR[1]) / th) + buffer;
+  let i0 = Math.floor(worldTL[0] / tw) - buffer;
+  let i1 = Math.floor(worldBR[0] / tw) + buffer;
+  let j0 = Math.floor(worldTL[1] / th) - buffer;
+  let j1 = Math.floor(worldBR[1] / th) + buffer;
 
   let closest_dist = 9999999;
 
+  // Loop through tiles within the camera's view
   for (let j = j0; j <= j1; j++) {
     for (let i = i0; i <= i1; i++) {
       let center_x = (i + 0.5) * tw;
@@ -123,6 +123,7 @@ function draw() {
         selected_screen_y = screen_pos[1];
       }
 
+      // Draw tile
       push();
       translate(center_x, center_y);
       p3_drawTile(i, j);
@@ -130,6 +131,7 @@ function draw() {
     }
   }
 
+  // Highlight selected tile
   p3_drawSelectedTile(selected_tile_i, selected_tile_j, selected_screen_x, selected_screen_y);
 
   p3_drawAfter();
@@ -154,36 +156,37 @@ function screenToWorld(x, y) {
 // --- YOUR MY_WORLD.JS PART START ---
 
 function p3_preload() {
-  // nothing to load
+  // No assets to preload
 }
 
 function p3_setup() {
-  // nothing to set up
+  // Setup for world if needed
 }
 
 function p3_worldKeyChanged(key) {
-  worldSeed = XXH.h32(key, 0);
+  worldSeed = XXH.h32(key, 0); // Set random seed based on key
   noiseSeed(worldSeed);
   randomSeed(worldSeed);
 }
 
 function p3_tileWidth() {
-  return 32;
+  return 32; // Tile width
 }
 
 function p3_tileHeight() {
-  return 16;
+  return 16; // Tile height
 }
 
 let clicks = {};
 
 function p3_tileClicked(i, j) {
   let key = [i, j];
-  clicks[key] = 1 + (clicks[key] | 0);
+  clicks[key] = 1 + (clicks[key] | 0); // Increment click count on tile
+  console.log("Tile clicked:", i, j, "Click count:", clicks[key]);
 }
 
 function p3_drawBefore() {
-  // nothing to draw before
+  // Draw something before rendering tiles (if needed)
 }
 
 function p3_drawTile(i, j) {
@@ -192,12 +195,14 @@ function p3_drawTile(i, j) {
   let th = p3_tileHeight();
   let hash = XXH.h32("tile:" + [i, j], worldSeed);
 
+  // Tile colors based on hash
   if (hash % 4 === 0) {
     fill(70, 130, 180); // Water
   } else {
     fill(34, 139, 34); // Land
   }
 
+  // Draw the tile shape
   push();
   beginShape();
   vertex(-tw, 0);
@@ -206,6 +211,7 @@ function p3_drawTile(i, j) {
   vertex(0, -th);
   endShape(CLOSE);
 
+  // Additional features like flowers or puddles
   if (hash % 6 === 0) {
     fill(255, 105, 180); // Flowers
     ellipse(-5, 5, 4, 4);
@@ -229,12 +235,12 @@ function p3_drawSelectedTile(i, j, x, y) {
   let th = p3_tileHeight();
   push();
   translate(x, y);
-  rect(-tw, -th, tw * 2, th * 2);
+  rect(-tw, -th, tw * 2, th * 2); // Highlight selected tile
   pop();
 }
 
 function p3_drawAfter() {
-  // nothing to draw after
+  // Draw something after rendering tiles (if needed)
 }
 
 // --- YOUR MY_WORLD.JS PART END ---
