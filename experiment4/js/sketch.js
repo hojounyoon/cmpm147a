@@ -32,7 +32,28 @@ p3_drawAfter;
 
 function p3_preload() {}
 
-function p3_setup() {
+
+// setup() function is called once when the program starts
+function setup() {
+  // place our canvas, making it fit our container
+  canvasContainer = $("#canvas-container");
+  let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
+  canvas.parent("canvas-container");
+  
+  // Create an instance of the class
+  myInstance = new MyClass("VALUE1", "VALUE2");
+
+  // Generate the dungeon grid
+  grid = generateGrid(90, 40); // Size of the dungeon grid
+
+  createButton("Reseed").mousePressed(() => {
+    grid = generateGrid(90, 40); // regenerate with same size
+  });
+
+  $(window).resize(function() {
+    resizeScreen();
+  });
+  resizeScreen();
 }
 
 let worldSeed;
