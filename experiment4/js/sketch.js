@@ -32,6 +32,12 @@ p3_drawAfter;
 
 function p3_preload() {}
 
+function resizeScreen() {
+  centerHorz = canvasContainer.width() / 2;
+  centerVert = canvasContainer.height() / 2;
+  console.log("Resizing...");
+  resizeCanvas(canvasContainer.width(), canvasContainer.height());
+}
 
 // setup() function is called once when the program starts
 function setup() {
