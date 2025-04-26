@@ -41,18 +41,29 @@ function resizeScreen() {
 
 // setup() function is called once when the program starts
 function setup() {
-  // place our canvas, making it fit our container
-  canvasContainer = $("#canvas-container");
-  let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
-  canvas.parent("canvas-container");
-  
-  // Create an instance of the class
-  myInstance = new MyClass("VALUE1", "VALUE2");
+  let canvas = createCanvas(800, 400);
+  canvas.parent("container");
 
-  $(window).resize(function() {
-    resizeScreen();
+  camera_offset = new p5.Vector(-width / 2, height / 2);
+  camera_velocity = new p5.Vector(0, 0);
+
+  if (window.p3_setup) {
+    window.p3_setup();
+  }
+
+  let label = createP();
+  label.html("World key: ");
+  label.parent("container");
+
+  let input = createInput("xyzzy");
+  input.parent(label);
+  input.input(() => {
+    rebuildWorld(input.value());
   });
-  resizeScreen();
+
+  createP("Arrow keys scroll. Clicking changes tiles.").parent("container");
+
+  rebuildWorld(input.value());
 }
 
 let worldSeed;
