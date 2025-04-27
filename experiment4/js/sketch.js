@@ -112,15 +112,15 @@ function p3_drawTile(i, j) {
   // Pink flowers (appear on 1 in 6 tiles)
   if (hash % 6 === 0) {
     fill(255, 105, 180); // Hot pink
-    ellipse(-5, 5, 4, 4);
-    ellipse(5, -3, 4, 4);
+    ellipse(-5, 5, 12, 12);
+    ellipse(5, -3, 12, 12);
   }
   
   // Blue flowers (appear on 1 in 8 tiles)
   if (hash % 8 === 0) {
     fill(70, 130, 180); // Blue color for flowers
-    ellipse(-5, 5, 5, 5);  // Flower on the left
-    ellipse(5, -3, 5, 5);  // Flower on the right
+    ellipse(-5, 5, 14, 14);  // Flower on the left
+    ellipse(5, -3, 14, 14);  // Flower on the right
   }
   
   if (hash % 12 === 0) {
