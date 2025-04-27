@@ -188,7 +188,7 @@ function drawTile(world_coords, camera_offset) {
     let y = (i + j) * p3_tileHeight() / 2;
 
     push();
-    translate(x + camera_offset[0] + width / 2 + p3_tileWidth() / 2, y - camera_offset[1] + height / 2);
+    translate(x + camera_offset[0] + width / 2 + p3_tileWidth(), y + camera_offset[1] + height / 2);
     p3_drawTile(Math.floor(i), Math.floor(j));
 
     // Highlight clicked tiles
