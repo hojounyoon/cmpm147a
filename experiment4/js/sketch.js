@@ -1,6 +1,6 @@
 // sketch.js - Tile-based world with camera movement
 // Author: Your Name
-// Date: 
+// Date:
 
 // Constants
 const VALUE1 = 1;
@@ -39,7 +39,7 @@ function resizeScreen() {
 function setup() {
     let canvas = createCanvas(800, 400);
     canvas.parent("container");
-    canvasContainer = select('#container'); // <-- added this line
+    canvasContainer = select('#container');
 
     camera_offset = new p5.Vector(-width / 2, height / 2);
     camera_velocity = new p5.Vector(0, 0);
@@ -83,75 +83,72 @@ function p3_tileHeight() {
 
 function p3_tileClicked(i, j) {
     let key = [i, j];
-    clicks[key] = 1 + (clicks[key] | 0);
+    clicks[key] = 1 + (clicks[key] || 0);
     console.log("Tile clicked:", i, j, "Click count:", clicks[key]);
 }
 
 function p3_drawTile(i, j) {
-  noStroke();
+    noStroke();
 
-  let hash = XXH.h32("tile:" + [i, j], worldSeed);
+    let hash = XXH.h32("tile:" + [i, j], worldSeed);
 
-  // Base green grass color (light or dark)
-  if (hash % 4 === 0) {
-    fill(70, 130, 180); // Light green
-  } else {
-    fill(34, 139, 34); // Dark green
-  }
+    let tw = p3_tileWidth();
+    let th = p3_tileHeight();
 
-  push();
+    // Base green grass color (light or dark)
+    if (hash % 4 === 0) {
+        fill(70, 130, 180); // Light green
+    } else {
+        fill(34, 139, 34); // Dark green
+    }
 
-  // Draw diamond tile
-  beginShape();
-  vertex(-tw, 0);
-  vertex(0, th);
-  vertex(tw, 0);
-  vertex(0, -th);
-  endShape(CLOSE);
+    push();
 
-  // Pink flowers (appear on 1 in 6 tiles)
-  if (hash % 6 === 0) {
-    fill(255, 105, 180); // Hot pink
-    ellipse(-5, 5, 4, 4);
-    ellipse(5, -3, 4, 4);
-  }
-  
-  // Blue flowers (appear on 1 in 8 tiles)
-  if (hash % 8 === 0) {
-    fill(70, 130, 180); // Blue color for flowers
-    ellipse(-5, 5, 5, 5);  // Flower on the left
-    ellipse(5, -3, 5, 5);  // Flower on the right
-  }
-  
-  if (hash % 12 === 0) {
-    fill(135, 206, 250, 40); // Hot pink
-    ellipse(-5, 5, 4, 4);
-    ellipse(5, -3, 4, 4);
-  }
+    // Draw diamond tile
+    beginShape();
+    vertex(-tw / 2, 0);
+    vertex(0, th / 2);
+    vertex(tw / 2, 0);
+    vertex(0, -th / 2);
+    endShape(CLOSE);
 
-  // Blue mist overlay (subtle and semi-transparent)
-  if (hash % 5 === 0) {
-    fill(135, 206, 250, 40); // Light blue, transparent
-    ellipse(0, 0, 40, 20);
-  }
+    // Pink flowers
+    if (hash % 6 === 0) {
+        fill(255, 105, 180);
+        ellipse(-5, 5, 4, 4);
+        ellipse(5, -3, 4, 4);
+    }
 
-  // Rare soft sunlight spot
-  if (hash % 30 === 0) {
-    fill(255, 255, 150, 60); // Soft yellow glow
-    ellipse(0, 0, 20, 20);
-  }
+    // Blue flowers
+    if (hash % 8 === 0) {
+        fill(70, 130, 180);
+        ellipse(-5, 5, 5, 5);
+        ellipse(5, -3, 5, 5);
+    }
 
-  // Tile click effects
-  let n = clicks[[i, j]] | 0;
-  if (n % 2 === 1) {
-    fill(135, 206, 235, 100); // More pronounced mist on click
-    ellipse(0, 0, 10, 5);
-    translate(0, -10);
-    fill(255, 255, 100, 100); // Subtle highlight
-    ellipse(0, 0, 10, 10);
-  }
+    // Blue mist overlay
+    if (hash % 5 === 0) {
+        fill(135, 206, 250, 40);
+        ellipse(0, 0, 40, 20);
+    }
 
-  pop();
+    // Rare soft sunlight spot
+    if (hash % 30 === 0) {
+        fill(255, 255, 150, 60);
+        ellipse(0, 0, 20, 20);
+    }
+
+    // Tile click effects
+    let n = clicks[[i, j]] || 0;
+    if (n % 2 === 1) {
+        fill(135, 206, 235, 100);
+        ellipse(0, 0, 10, 5);
+        translate(0, -10);
+        fill(255, 255, 100, 100);
+        ellipse(0, 0, 10, 10);
+    }
+
+    pop();
 }
 
 function p3_drawSelectedTile(i, j, x, y) {
@@ -162,7 +159,7 @@ function p3_drawSelectedTile(i, j, x, y) {
     let th = p3_tileHeight();
     push();
     translate(x, y);
-    rect(-tw, -th, tw * 2, th * 2);
+    rect(-tw / 2, -th / 2, tw, th);
     pop();
 }
 
@@ -172,14 +169,12 @@ function p3_drawAfter() {
     text("FPS: " + Math.round(frameRate()), 20, 20);
 }
 
-// New: helper to convert screen position to world tile coordinates
 function screenToWorld(screenCoords, cameraOffset) {
     let x = (screenCoords[0] - cameraOffset[0]) / p3_tileWidth();
     let y = (screenCoords[1] + cameraOffset[1]) / p3_tileHeight();
     return [x, y];
 }
 
-// New: helper to get fractional camera offset
 function cameraToWorldOffset(cameraOffset) {
     return {
         x: cameraOffset[0] / p3_tileWidth(),
@@ -187,7 +182,6 @@ function cameraToWorldOffset(cameraOffset) {
     };
 }
 
-// New: draw a tile at a world position
 function drawTile(world_coords, camera_offset) {
     let [i, j] = world_coords;
     let x = (i - j) * p3_tileWidth() / 2;
@@ -195,31 +189,28 @@ function drawTile(world_coords, camera_offset) {
 
     push();
     translate(x + camera_offset[0] + width / 2, y - camera_offset[1] + height / 2);
-    p3_drawTile(i, j);
+    p3_drawTile(Math.floor(i), Math.floor(j));
 
     // Highlight clicked tiles
     let key = [Math.floor(i), Math.floor(j)];
-    if (clicks[key] && clicks[key] % 2 === 1) { // highlight every odd click
+    if (clicks[key] && clicks[key] % 2 === 1) {
         p3_drawSelectedTile(i, j, 0, 0);
     }
     pop();
 }
 
-// New: tile render order
 function tileRenderingOrder(coords) {
     return coords;
 }
 
-// New: describe tile under mouse
 function describeMouseTile(world_pos, camera_offset) {
     let [i, j] = [Math.floor(world_pos[0]), Math.floor(world_pos[1])];
     fill(255);
     noStroke();
-    text(Tile: (${i}, ${j}), 20, 40);
+    text(`Tile: (${i}, ${j})`, 20, 40);
 }
 
 function draw() {
-    // Controls
     if (keyIsDown(LEFT_ARROW)) {
         camera_velocity.x -= 1;
     }
@@ -270,8 +261,7 @@ function draw() {
                     x + 0.5 + world_offset.x,
                     y + 0.5 - world_offset.y
                 ]),
-                [camera_offset.x,
-                camera_offset.y]
+                [camera_offset.x, camera_offset.y]
             );
         }
     }
