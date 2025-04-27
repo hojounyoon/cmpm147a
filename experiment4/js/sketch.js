@@ -88,40 +88,70 @@ function p3_tileClicked(i, j) {
 }
 
 function p3_drawTile(i, j) {
-    noStroke();
-    let tw = p3_tileWidth();
-    let th = p3_tileHeight();
-    let hash = XXH.h32("tile:" + [i, j], worldSeed);
+  noStroke();
 
-    // Tile color
-    if (hash % 4 === 0) {
-        fill(70, 130, 180); // Water
-    } else {
-        fill(34, 139, 34); // Land
-    }
+  let hash = XXH.h32("tile:" + [i, j], worldSeed);
 
-    push();
-    beginShape();
-    vertex(-tw, 0);
-    vertex(0, th);
-    vertex(tw, 0);
-    vertex(0, -th);
-    endShape(CLOSE);
+  // Base green grass color (light or dark)
+  if (hash % 4 === 0) {
+    fill(70, 130, 180); // Light green
+  } else {
+    fill(34, 139, 34); // Dark green
+  }
 
-    // Decorations
-    if (hash % 6 === 0) {
-        fill(255, 105, 180); // Flowers
-        ellipse(-5, 5, 4, 4);
-        ellipse(5, -3, 4, 4);
-    }
+  push();
 
-    if (hash % 8 === 0) {
-        fill(70, 130, 180); // Puddles
-        ellipse(-5, 5, 5, 5);
-        ellipse(5, -3, 5, 5);
-    }
+  // Draw diamond tile
+  beginShape();
+  vertex(-tw, 0);
+  vertex(0, th);
+  vertex(tw, 0);
+  vertex(0, -th);
+  endShape(CLOSE);
 
-    pop();
+  // Pink flowers (appear on 1 in 6 tiles)
+  if (hash % 6 === 0) {
+    fill(255, 105, 180); // Hot pink
+    ellipse(-5, 5, 4, 4);
+    ellipse(5, -3, 4, 4);
+  }
+  
+  // Blue flowers (appear on 1 in 8 tiles)
+  if (hash % 8 === 0) {
+    fill(70, 130, 180); // Blue color for flowers
+    ellipse(-5, 5, 5, 5);  // Flower on the left
+    ellipse(5, -3, 5, 5);  // Flower on the right
+  }
+  
+  if (hash % 12 === 0) {
+    fill(135, 206, 250, 40); // Hot pink
+    ellipse(-5, 5, 4, 4);
+    ellipse(5, -3, 4, 4);
+  }
+
+  // Blue mist overlay (subtle and semi-transparent)
+  if (hash % 5 === 0) {
+    fill(135, 206, 250, 40); // Light blue, transparent
+    ellipse(0, 0, 40, 20);
+  }
+
+  // Rare soft sunlight spot
+  if (hash % 30 === 0) {
+    fill(255, 255, 150, 60); // Soft yellow glow
+    ellipse(0, 0, 20, 20);
+  }
+
+  // Tile click effects
+  let n = clicks[[i, j]] | 0;
+  if (n % 2 === 1) {
+    fill(135, 206, 235, 100); // More pronounced mist on click
+    ellipse(0, 0, 10, 5);
+    translate(0, -10);
+    fill(255, 255, 100, 100); // Subtle highlight
+    ellipse(0, 0, 10, 10);
+  }
+
+  pop();
 }
 
 function p3_drawSelectedTile(i, j, x, y) {
