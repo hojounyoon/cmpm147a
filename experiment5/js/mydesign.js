@@ -23,6 +23,12 @@ function getInspirations() {
       assetUrl: "img/girl-with-fire.jpg",
       credit: "Four-year-old Zoë Roth, 2005"
     },
+    {
+      name: "Santa Cruz Sunset", 
+      assetUrl: "https://cdn.glitch.global/ef4f43ca-7b3d-40e1-8773-aa2c29209ecf/walton-lighthouse-sunset-1.jpg?v=1746123746475",
+      credit: "Santa Cruz Lighthouse",
+      shape: "rect"
+    },
   ];
 }
 
@@ -43,26 +49,37 @@ function initDesign(inspiration) {
   
   let design = {
     bg: 128,
-    fg: []
-  }
+    shapeCount: 100,
+    maxWidth: width / 2,
+    maxHeight: height / 2,
+    fg: [],
+  };
   
-  for(let i = 0; i < 100; i++) {
-    design.fg.push({x: random(width),
-                    y: random(height),
-                    w: random(width/2),
-                    h: random(height/2),
-                    fill: random(255)})
+  for (let i = 0; i < design.shapeCount; i++) {
+    design.fg.push({
+      x: random(width),
+      y: random(height),
+      w: random(design.maxWidth),
+      h: random(design.maxHeight),
+      fill: random(255)
+    });
   }
   return design;
 }
 
 function renderDesign(design, inspiration) {
-  
-  background(design.bg);
+  image(inspiration.image, 0, 0, width, height);
+  fill(design.bg, 128);
+  rect(0, 0, width, height);
+
   noStroke();
-  for(let box of design.fg) {
+  for (let box of design.fg) {
     fill(box.fill, 128);
-    rect(box.x, box.y, box.w, box.h);
+    if (inspiration.shape === "ellipse") {
+      ellipse(box.x, box.y, box.w, box.h);
+    } else {
+      rect(box.x, box.y, box.w, box.h);
+    }
   }
 }
 
@@ -79,5 +96,5 @@ function mutateDesign(design, inspiration, rate) {
 
 
 function mut(num, min, max, rate) {
-    return constrain(randomGaussian(num, (rate * (max - min)) / 10), min, max);
+    return constrain(randomGaussian(num, (rate * (max - min)) / 20), min, max);
 }
