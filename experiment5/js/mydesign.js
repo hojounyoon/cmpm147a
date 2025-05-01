@@ -28,7 +28,7 @@ function getInspirations() {
 
 function initDesign(inspiration) {
   // set the canvas size based on the container
-  let canvasContainer = $('image-container'); // Select the container using jQuery
+  let canvasContainer = $('.image-container'); // Select the container using jQuery
   let canvasWidth = canvasContainer.width(); // Get the width of the container
   let aspectRatio = inspiration.image.height / inspiration.image.width;
   let canvasHeight = canvasWidth * aspectRatio; // Calculate the height based on the aspect ratio
