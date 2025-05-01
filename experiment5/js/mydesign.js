@@ -7,21 +7,25 @@ function getInspirations() {
       name: "Lunch atop a Skyscraper", 
       assetUrl: "img/lunch-on-a-skyscraper.jpg",
       credit: "Lunch atop a Skyscraper, Charles Clyde Ebbets, 1932"
+      shape: "rect"
     },
     {
       name: "Train Wreck", 
       assetUrl: "img/train-wreck.jpg",
       credit: "Train Wreck At Monteparnasse, Levy & fils, 1895"
+      shape: "rect"
     },
     {
       name: "Migrant mother", 
       assetUrl: "img/migrant-mother.jpg",
       credit: "Migrant Mother near Nipomo, California, Dorothea Lange, 1936"
+      shape: "ellipse"
     },
     {
       name: "Disaster Girl", 
       assetUrl: "img/girl-with-fire.jpg",
       credit: "Four-year-old Zoë Roth, 2005"
+      shape: "ellipse"
     },
     {
       name: "Santa Cruz Sunset", 
